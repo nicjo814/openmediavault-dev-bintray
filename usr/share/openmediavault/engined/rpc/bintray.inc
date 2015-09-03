@@ -468,12 +468,7 @@ class OMVRpcServiceBintray extends OMVRpcServiceAbstract
 
         OMVutil::exec($cmd, $out, $res);
 
-        if (strcmp($out[0], "{}") === 0) {
-            throw new OMVException(
-                OMVErrorMsg::E_EXEC_MISC,
-                "File succesfully published"
-            );
-        } else {
+        if (!(strcmp($out[0], "{}") === 0)) {
             throw new OMVException(
                 OMVErrorMsg::E_EXEC_MISC,
                 $out[0]

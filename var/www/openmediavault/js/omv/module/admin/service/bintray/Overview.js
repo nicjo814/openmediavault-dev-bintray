@@ -194,10 +194,16 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
         var me = this;
         Ext.create("OMV.module.admin.service.bintray.Packages", {
             title: _("Add package"),
-            uuid: ""
+            uuid: "",
+            listeners: {
+                scope: me,
+                submit: function() {
+                    this.doReload();
+                }
+            }
         }).show();
     },
-    
+
     onEditButton : function() {
         var me = this;
         var sm = me.getSelectionModel();
@@ -205,7 +211,13 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
         var record = records[0];
         Ext.create("OMV.module.admin.service.bintray.Packages", {
             title: _("Edit package"),
-            uuid: record.get("uuid")
+            uuid: record.get("uuid"),
+            listeners: {
+                scope: me,
+                submit: function() {
+                    this.doReload();
+                }
+            }
         }).show();
     },
 
@@ -215,7 +227,18 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
         var records = sm.getSelection();
         var record = records[0];
         Ext.create("OMV.module.admin.service.bintray.Publish", {
-            uuid: record.get("uuid")
+            uuid: record.get("uuid"),
+            listeners: {
+                scope: me,
+                submit: function() {
+                    OMV.MessageBox.show({
+                        title: _("Success"),
+                        msg: _("File successfully published"),
+                        scope: me,
+                        buttons: Ext.Msg.OK
+                    });
+                }
+            }
         }).show();
     }
 
