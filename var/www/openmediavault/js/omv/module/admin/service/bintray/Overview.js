@@ -73,7 +73,7 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
 
     initComponent: function() {
         var me = this;
-        
+
         this.on("beforerender", function () {
             var parent = this.up("tabpanel");
 
@@ -96,6 +96,10 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
                     parent.setActiveTab(settingsPanel);
                 }
             }
+            me.queryById(me.getId() + "-add").setDisabled(false);
+            me.queryById(me.getId() + "-edit").setDisabled(true);
+            me.queryById(me.getId() + "-publish").setDisabled(true);
+            me.queryById(me.getId() + "-delete").setDisabled(true);
         }, this);
 
         Ext.apply(me, {
@@ -154,6 +158,15 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
             disabled: true,
             handler: Ext.Function.bind(me.onPublishButton, me, [ me ]),
             scope: me
+        },{
+            id: me.getId() + "-delete",
+            xtype: "button",
+            text: _("Delete package"),
+            icon: "images/delete.png",
+            iconCls: Ext.baseCSSPrefix + "btn-icon-16x16",
+            disabled: true,
+            handler: Ext.Function.bind(me.onDeleteButton, me, [ me ]),
+            scope: me
         }];
     },
 
@@ -161,16 +174,18 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
         var me = this;
         if(me.hideTopToolbar)
             return;
-        var tbarBtnName = [ "add", "edit", "publish" ];
+        var tbarBtnName = [ "add", "edit", "publish", "delete" ];
         var tbarBtnDisabled = {
             "add": false,
             "edit": false,
-            "publish": false
+            "publish": false,
+            "delete": false
         };
         // Enable/disable buttons depending on the number of selected rows.
         if(records.length <= 0) {
             tbarBtnDisabled["edit"] = true;
             tbarBtnDisabled["publish"] = true;
+            tbarBtnDisabled["delete"] = true;
         } else if(records.length == 1) {
         } else {
             tbarBtnDisabled["edit"] = true;
@@ -240,6 +255,21 @@ Ext.define("OMV.module.admin.service.bintray.Overview", {
                 }
             }
         }).show();
+    },
+
+    doDeletion: function(record) {
+        var me = this;
+        OMV.Rpc.request({
+            scope: me,
+            callback: me.onDeletion,
+            rpcData: {
+                service: "Bintray",
+                method: "deletePackage",
+                params: {
+                    uuid: record.get('uuid')
+                }
+            }
+        });
     }
 
 });

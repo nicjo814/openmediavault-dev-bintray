@@ -115,6 +115,7 @@ class OMVRpcServiceBintray extends OMVRpcServiceAbstract
         $this->registerMethod("getPackages");
         $this->registerMethod("getPackage");
         $this->registerMethod("setPackage");
+        $this->registerMethod("deletePackage");
         $this->registerMethod("publishFile");
 
         $this->registerMethod("getSettings");
@@ -367,6 +368,39 @@ class OMVRpcServiceBintray extends OMVRpcServiceAbstract
     }
 
     /**
+     * Delete a package object
+     * 
+     * @param array  $params  An associative array with all RPC call parameters
+     * @param string $context The context of the user maing the RPC call
+     *
+     * @return array $object An associative array with all the new settings
+     */
+    public function deletePackage($params, $context)
+    {
+        global $xmlConfig;
+        $this->validateMethodContext(
+            $context,
+            array("role" => OMV_ROLE_ADMINISTRATOR)
+        );
+        $this->validateMethodParams(
+            $params,
+            '{' .
+            '"type": "object",' .
+            '"properties": {' .
+            '"uuid": { "type": "string" }' .
+            '}}'
+        );
+
+        $xpath = $this->_getXpath() . "/packages/package[uuid='" . $params['uuid'] . "']";
+        if (false === $xmlConfig->delete($xpath)) {
+            throw new OMVException(
+                OMVErrorMsg::E_CONFIG_SET_OBJECT_FAILED,
+                $this->_getXpath()
+            );
+        }
+    }
+
+    /**
      * Publish a file to Bintray
      * 
      * @param array  $params  An associative array with all RPC call parameters
@@ -406,7 +440,7 @@ class OMVRpcServiceBintray extends OMVRpcServiceAbstract
                 $this->_getXpath()
             );
         }
-        
+
         if (!(preg_match('/^.*_([\d]+\.[\d\.]+).*$/', $params['file'], $matches))) {
             throw new OMVException(
                 OMVErrorMsg::E_EXEC_MISC,
