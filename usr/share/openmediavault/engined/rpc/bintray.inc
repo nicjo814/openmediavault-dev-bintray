@@ -328,7 +328,7 @@ class OMVRpcServiceBintray extends OMVRpcServiceAbstract
         );
 
         $object = array(
-            "uuid" => (strcmp($params['uuid'], "") === 0) ? OMVUtil::uuid() : $params['uuid'],
+            "uuid" => (strcmp($params['uuid'], "undefined") === 0) ? OMVUtil::uuid() : $params['uuid'],
             "omvversion" => $params['omvversion'],
             "repository" => $params['repository'],
             "bpackage" => $params['bpackage'],
@@ -337,7 +337,7 @@ class OMVRpcServiceBintray extends OMVRpcServiceAbstract
             "arch" => $params['arch']
         );
 
-        if (strcmp($params['uuid'], "") === 0) {
+        if (strcmp($params['uuid'], "undefined") === 0) {
             //New package
             if (false === $xmlConfig->set($this->_getXpath() . "/packages", array("package" => $object))) {
                 throw new OMVException(
