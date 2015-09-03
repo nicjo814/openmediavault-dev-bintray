@@ -1,0 +1,13 @@
+Source: openmediavault-dev-bintray
+Section: net
+XB-Plugin-Section: virtualization
+Priority: optional
+Maintainer: OpenMediaVault Plugin Developers <plugins@omv-extras.org>
+Build-Depends: debhelper (>= 9.0.0 )
+Standards-Version: 3.9.3
+Homepage: http://omv-extras.org/
+
+Package: openmediavault-dev-bintray
+Architecture: amd64
+Depends: ${misc:Depends}, openmediavault (>= 1.7), php5-curl, openmediavault-omvextrasorg (>= 2.0)
+Description: OpenMediaVault plugin for Bintray
